@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { ChakraProvider } from "@chakra-ui/react";
+import { StoreProvider } from "easy-peasy";
+import { useEffect, useState } from "react";
+import Layout from "./components/Layout";
+
+import store from "./store";
+import { supabase } from "./supabase";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function App() {
+  const isSite = window.location.host != BASE_URL.split("//").pop();
+
+  const [siteCompleteHtml, setSiteCompleteHtml] = useState("");
+
+  useEffect(async () => {
+    if (isSite) {
+      const siteName = window.location.pathname.split("/")[1];
+      const { data } = await supabase
+        .from("published_sites")
+        .select("html, css, js, name")
+        .match({ name: siteName });
+
+      const { html, css, js } = data[0];
+      console.log(data)
+      setSiteCompleteHtml(`<style>${css}</style>${html}<script>${js}</script>`);
+    }
+  });
+
+  if (isSite) return <span dangerouslySetInnerHTML={{__html: siteCompleteHtml}}></span>;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChakraProvider>
+      <StoreProvider store={store}>
+        <Layout />
+      </StoreProvider>
+    </ChakraProvider>
   );
 }
 
