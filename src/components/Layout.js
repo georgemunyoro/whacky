@@ -35,7 +35,6 @@ export default function Layout({ children }) {
   const toast = useToast();
   const navigate = useNavigate();
 
-
   useEffect(async () => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -154,20 +153,27 @@ export default function Layout({ children }) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/product/pricing" element={<Pricing />} />
-          <Route path="/user/signin" element={<SignIn />} />
-          <Route path="/user/signup" element={<SignUp />} />
           <Route path="/user/reset-password" element={<ResetPassword />} />
           <Route path="/user/new-password" element={<NewPassword />} />
+
           {!isLoggedIn && (
-            <Route path="*" element={<Navigate replace to="/user/signin" />} />
-          )}
-          {isLoggedIn && (
             <>
-              <Route path="/dashboard/sites" element={<Sites />} />
+              <Route path="/user/signin" element={<SignIn />} />
+              <Route path="/user/signup" element={<SignUp />} />
+              <Route
+                path="*"
+                element={<Navigate replace to="/user/signin" />}
+              />
               <Route
                 path="/user/signup-successful"
                 element={<SignUpSuccessful />}
               />
+            </>
+          )}
+          {isLoggedIn && (
+            <>
+              <Route path="/dashboard/sites" element={<Sites />} />
+
               <Route
                 path="/dashboard/sites/editor/:siteId"
                 element={<Editor />}

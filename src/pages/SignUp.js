@@ -1,10 +1,12 @@
 import {
   Flex,
+  Spinner,
   Box,
   FormControl,
   FormLabel,
   Input,
   Checkbox,
+  useToast,
   Stack,
   Link,
   Button,
@@ -15,39 +17,85 @@ import {
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { useStoreState } from "easy-peasy";
+import { useNavigate } from "react-router";
 
 function SignUp() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-
   const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isLoggedIn = useStoreState((state) => state.isLoggedIn);
-  //   if (isLoggedIn) router.push("/dashboard/sites");
+
+  const toast = useToast();
 
   const handleSignup = async () => {
+    setIsLoading(true);
+    let errors = [];
     if (password !== password2) {
-      setErrors([...errors, "Passwords must match!"]);
+      errors.push("Passwords must match");
+    }
 
+    if (username.length < 3) {
+      errors.push("Username should be more than 3 characters");
+    }
+
+    if (name.length < 2) {
+      errors.push("Please enter your full name");
+    }
+
+    if (errors.length > 0) {
+      errors.forEach((e) => {
+        toast({
+          title: e,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+      setIsLoading(false);
       return;
     }
 
-    const { user, session, error } = await supabase.auth.signUp(
+    const { error } = await supabase.auth.signUp(
       {
         email,
         password,
       },
       {
         data: {
-          name,
+          fullname: name,
           username,
         },
       }
     );
-    // router.push("/user/signup-successful");
+
+    if (error) {
+      if (error.status == 500) {
+        toast({
+          title: "That username is unavailable",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } else {
+      navigate("/user/signup-successful");
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -116,7 +164,8 @@ function SignUp() {
                 }}
                 onClick={handleSignup}
               >
-                Sign up
+                {isLoading && <Spinner />}
+                {!isLoading && "Sign up"}
               </Button>
             </Stack>
           </Stack>
