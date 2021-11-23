@@ -26,7 +26,7 @@ export default function UserSettings() {
       .from("payments")
       .select("session_id, created_at, user_id");
 
-    if (!error) {
+    if (!error && data.length > 0) {
       setPayments(data);
       setSessionId(data.pop().session_id);
       setIsLoading(false);
@@ -76,6 +76,7 @@ export default function UserSettings() {
             bg: "blue.500",
           }}
           onClick={openBillingSession}
+          isDisabled={sessionId === ""}
         >
           Manage your billing information
         </Button>
