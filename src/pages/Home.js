@@ -10,10 +10,12 @@ import {
   useColorModeValue,
   createIcon,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
-import "../components/fonts.css"
+import "../components/fonts.css";
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <>
       <Container maxW={"3xl"}>
@@ -23,7 +25,7 @@ export default function Home() {
           py={{ base: 20, md: 36 }}
           marginTop={-15}
         >
-          <Box style={{display: "flex", alignItems: "center"}}>
+          <Box style={{ display: "flex", alignItems: "center" }}>
             <Image
               width={177}
               src="https://whacky.app/assets/images/boysm1png-177x433.png"
@@ -40,29 +42,25 @@ export default function Home() {
                   Development
                 </Text>
               </Heading>
-              <Text color={"gray.500"} style={{marginTop: 10}}>
+              <Text color={"gray.500"} style={{ marginTop: 10 }}>
                 Why pay hundreds of dollars just to keep a simple website
                 presence online? I can build you a super fast site for only $100
                 and host it at $20/yr
               </Text>
-              <Stack
-                direction={"column"}
-                spacing={3}
-                position={"relative"}
-              >
-                <a href="/user/signup">
-                  <Button
+              <Stack direction={"column"} spacing={3} position={"relative"}>
+                <Button
+                  onClick={() => navigate("/user/signup")}
+                  width="120px"
                   marginTop={5}
-                    colorScheme={"green"}
-                    bg={"green.400"}
-                    px={6}
-                    _hover={{
-                      bg: "green.500",
-                    }}
-                  >
-                    Get Started
-                  </Button>
-                </a>
+                  colorScheme={"green"}
+                  bg={"green.400"}
+                  px={6}
+                  _hover={{
+                    bg: "green.500",
+                  }}
+                >
+                  Get Started
+                </Button>
                 <Box>
                   <Icon
                     as={Arrow}
