@@ -126,9 +126,6 @@ export default function Navbar() {
                 <MenuList zIndex={100}>
                   <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                   <MenuDivider />
-                  <MenuItem onClick={() => navigate("/dashboard/settings")}>
-                    Billing
-                  </MenuItem>
                 </MenuList>
               </Menu>
             )}

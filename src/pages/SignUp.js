@@ -5,13 +5,11 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Checkbox,
   useToast,
   Stack,
   Link,
   Button,
   Heading,
-  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -27,10 +25,7 @@ function SignUp() {
   const [password2, setPassword2] = useState("");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const isLoggedIn = useStoreState((state) => state.isLoggedIn);
 
   const toast = useToast();
 

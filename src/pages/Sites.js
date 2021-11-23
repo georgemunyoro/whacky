@@ -1,22 +1,14 @@
 import {
   AddIcon,
-  CheckCircleIcon,
   ExternalLinkIcon,
-  SettingsIcon,
   LockIcon,
+  SettingsIcon,
 } from "@chakra-ui/icons";
-import { MdWeb } from "react-icons/md";
 import { Box, Stack } from "@chakra-ui/layout";
-import Logo from "../components/Logo";
 import {
-  Center,
-  Spinner,
-  Image,
-  Avatar,
-  SimpleGrid,
-  Flex,
   Button,
   ButtonGroup,
+  Center,
   FormControl,
   FormLabel,
   Heading,
@@ -28,32 +20,34 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
+  Spinner,
   Table,
   Tbody,
   Td,
-  Textarea,
-  useColorModeValue,
   Text,
+  Textarea,
   Th,
   Thead,
   Tr,
+  useColorModeValue,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useStoreState } from "easy-peasy";
 import React, { useEffect, useRef, useState } from "react";
+import { MdWeb } from "react-icons/md";
+import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
 import { supabase } from "../supabase";
-import { Link } from "react-router-dom";
-const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const PAYMENT_API_URL = "http://localhost:4242";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+const PAYMENT_API_URL = process.env.REACT_APP_PAYMENTS_API_URL;
 
 const Sites = () => {
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
-  // const [subCount, setSubCount] = useState(0);
   const [payments, setPayments] = useState([]);
 
   const { onOpen, onClose, isOpen } = useDisclosure();
@@ -84,7 +78,7 @@ const Sites = () => {
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     fetchTemplates();
     fetchSites();
     fetchSubs();
@@ -232,7 +226,7 @@ const NewSiteForm = ({
       });
     }
 
-    const { data, error } = await supabase.from("sites").insert([
+    const { error } = await supabase.from("sites").insert([
       {
         owner: user.id,
         name: newSiteName,
@@ -343,7 +337,7 @@ const NewSiteForm = ({
     >
       <ModalOverlay />
       <ModalContent style={{ width: "80vw", maxWidth: "80vw" }}>
-        {stage == "details" && (
+        {stage === "details" && (
           <>
             <ModalHeader style={modalHeaderStyle}>
               Create a new site
@@ -372,7 +366,7 @@ const NewSiteForm = ({
             </ModalFooter>
           </>
         )}
-        {stage == "templates" && (
+        {stage === "templates" && (
           <>
             <ModalHeader style={modalHeaderStyle}>Pick a template</ModalHeader>
             <ModalBody>
@@ -380,7 +374,7 @@ const NewSiteForm = ({
                 {templates.map((t) => (
                   <Template
                     onClick={() => setSelectedTemplate(t.id)}
-                    isSelected={selectedTemplate == t.id}
+                    isSelected={selectedTemplate === t.id}
                     key={t.id}
                     name={t.name}
                     img={t.thumbnail}
@@ -401,13 +395,14 @@ const NewSiteForm = ({
                 {selectedTemplate == null
                   ? "Continue"
                   : `Continue with "${
-                      templates.filter((t) => t.id == selectedTemplate)[0]?.name
+                      templates.filter((t) => t.id === selectedTemplate)[0]
+                        ?.name
                     }"`}
               </Button>
             </ModalFooter>
           </>
         )}
-        {stage == "loading" && (
+        {stage === "loading" && (
           <ModalContent
             style={{
               width: "80vw",

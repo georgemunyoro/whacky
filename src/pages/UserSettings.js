@@ -1,56 +1,56 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-  useColorModeValue,
-  HStack,
-  Avatar,
-  AvatarBadge,
-  IconButton,
-  Center,
-  Spinner,
-  List,
-  Text,
-} from "@chakra-ui/react";
-import { SmallCloseIcon } from "@chakra-ui/icons";
+import { Button, Flex, Heading, List, Stack, Text } from "@chakra-ui/react";
 import { useStoreState } from "easy-peasy";
-import { useNavigate } from "react-router";
+import React, { useEffect, useRef, useState } from "react";
+import Loading from "../components/Loading";
+import { supabase } from "../supabase";
+
+const PAYMENT_API_URL = "http://localhost:4242";
 
 export default function UserSettings() {
   const user = useStoreState((s) => s.user);
-  const [isSaving, setIsSaving] = useState(false);
+
+  // eslint-disable-next-line
+  const [payments, setPayments] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [sessionId, setSessionId] = useState("");
+
+  const billingFormRef = useRef();
+
+  const openBillingSession = () => {
+    billingFormRef.current.submit();
+  };
+
+  const fetchSubs = async () => {
+    const { data, error } = await supabase
+      .from("payments")
+      .select("session_id, created_at, user_id");
+
+    if (!error) {
+      setPayments(data);
+      setSessionId(data.pop().session_id);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubs();
+  }, [user]);
+
+  if (isLoading) return <Loading width="100%" height="100%" />;
 
   return (
-    <Flex
-      minH={"100vh"}
-      align={"center"}
-      justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
-    >
+    <Flex minH={"100vh"} align={"center"} justify={"center"} bg={"gray.50"}>
       <Stack
         spacing={4}
         w={"full"}
         maxW={"md"}
-        bg={useColorModeValue("white", "gray.700")}
         rounded={"xl"}
         boxShadow={"lg"}
         p={6}
         my={12}
         justifyContent="center"
       >
-        {/* <Stack direction={["row"]} spacing={6}>
-          <Center>
-            <Avatar
-              size="xl"
-              src="https://avatars.dicebear.com/api/identicon/user.svg"
-            />
-          </Center>
-        </Stack> */}
         <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }}>
           {user.user_metadata.username}
         </Heading>
@@ -58,17 +58,19 @@ export default function UserSettings() {
           <Text>{user.user_metadata.name}</Text>
           <Text>{user.email}</Text>
         </List>
+        <form
+          ref={billingFormRef}
+          action={`${PAYMENT_API_URL}/create-portal-session`}
+          method="POST"
+        >
+          <input
+            type="hidden"
+            id="session-id"
+            name="session_id"
+            value={sessionId}
+          />
+        </form>
         <Stack spacing={6} direction={["column", "row"]}>
-          <Button
-            bg={"red.400"}
-            color={"white"}
-            w="full"
-            _hover={{
-              bg: "red.500",
-            }}
-          >
-            Cancel
-          </Button>
           <Button
             bg={"blue.400"}
             color={"white"}
@@ -76,9 +78,9 @@ export default function UserSettings() {
             _hover={{
               bg: "blue.500",
             }}
+            onClick={openBillingSession}
           >
-            {isSaving && <Spinner />}
-            {!isSaving && "Save"}
+            Manage your billing information
           </Button>
         </Stack>
       </Stack>

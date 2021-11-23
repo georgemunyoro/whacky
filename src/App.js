@@ -9,7 +9,7 @@ import { supabase } from "./supabase";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function App() {
-  const isSite = window.location.host != BASE_URL.split("//").pop();
+  const isSite = window.location.host !== BASE_URL.split("//").pop();
 
   const [siteCompleteHtml, setSiteCompleteHtml] = useState("");
 
