@@ -17,7 +17,7 @@ import {
   useColorModeValue,
   Stack,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { supabase } from "../supabase";
 
 const NAV_LINKS = [
@@ -148,5 +148,3 @@ export default function Navbar() {
     </>
   );
 }
-
-const NAV_ITEMS = [];

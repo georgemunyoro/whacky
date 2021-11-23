@@ -13,6 +13,7 @@ function App() {
 
   const [siteCompleteHtml, setSiteCompleteHtml] = useState("");
 
+  // eslint-disable-next-line
   useEffect(async () => {
     if (isSite) {
       const siteName = window.location.pathname.split("/")[1];
@@ -22,7 +23,7 @@ function App() {
         .select("html, css, js, name")
         .match({ name: siteName, owner_username: username });
 
-      if (!data || data.length == 0) {
+      if (!data || data.length === 0) {
         window.location.href = BASE_URL;
         return;
       }
@@ -31,7 +32,7 @@ function App() {
       console.log(data);
       setSiteCompleteHtml(`<style>${css}</style>${html}<script>${js}</script>`);
     }
-  });
+  }, [isSite]);
 
   if (isSite)
     return <span dangerouslySetInnerHTML={{ __html: siteCompleteHtml }}></span>;

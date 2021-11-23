@@ -37,7 +37,15 @@ export default function Layout({ children }) {
   const toast = useToast();
   const navigate = useNavigate();
 
-  useEffect(async () => {
+  const attemptLogin = async () => {
+    const user = await supabase.auth.user();
+    if (user) {
+      setIsLoggedIn(true);
+      setUser(user);
+    }
+  };
+
+  useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === "SIGNED_IN") {
@@ -50,10 +58,13 @@ export default function Layout({ children }) {
           setIsLoggedIn(true);
           setSession(session);
 
-          if (!window.location.pathname.startsWith("/subscription") && !window.location.pathname.startsWith("/tos")) {
+          if (
+            !window.location.pathname.startsWith("/subscription") &&
+            !window.location.pathname.startsWith("/tos")
+          ) {
             navigate("/dashboard/sites");
           }
-        } else if (event == "SIGNED_OUT") {
+        } else if (event === "SIGNED_OUT") {
           setIsLoggedIn(false);
           setSession(null);
           navigate("/");
@@ -69,17 +80,15 @@ export default function Layout({ children }) {
     );
 
     if (!isLoggedIn) {
-      const user = await supabase.auth.user();
-      if (user) {
-        setIsLoggedIn(true);
-        setUser(user);
-      }
+      attemptLogin();
     }
     setLoading(false);
 
     return () => {
       authListener.unsubscribe();
     };
+
+    // eslint-disable-next-line
   }, []);
 
   if (loading)

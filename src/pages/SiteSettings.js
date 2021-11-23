@@ -12,13 +12,12 @@ import {
   useToast,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import { supabase } from "../supabase";
 import { useParams, useNavigate } from "react-router-dom";
@@ -41,11 +40,7 @@ const SiteSettings = () => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
 
-  useEffect(async () => {
-    fetchSite();
-  }, [params]);
-
-  const fetchSite = async () => {
+  const fetchSite = useCallback(async () => {
     const { data } = await supabase
       .from("sites")
       .select(
@@ -60,7 +55,11 @@ const SiteSettings = () => {
       setLoading(false);
       setIsPublished(data[0].published);
     }
-  };
+  }, [params]);
+
+  useEffect(() => {
+    fetchSite();
+  }, [params, fetchSite]);
 
   const handleDeleteSite = async () => {
     setIsDeleteConfirmationOpen(false);
@@ -94,7 +93,7 @@ const SiteSettings = () => {
           })
           .match({ id: site.id });
       } else {
-        const { error } = await supabase.from("published_sites").insert({
+        await supabase.from("published_sites").insert({
           id: site.id,
           name: name,
           html: site.html,

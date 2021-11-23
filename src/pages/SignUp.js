@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { supabase } from "../supabase";
-import { useStoreState } from "easy-peasy";
 import { useNavigate } from "react-router";
 
 function SignUp() {
@@ -72,7 +71,7 @@ function SignUp() {
     );
 
     if (error) {
-      if (error.status == 500) {
+      if (error.status === 500) {
         toast({
           title: "That username is unavailable",
           status: "error",

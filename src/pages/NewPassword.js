@@ -7,9 +7,9 @@ import {
   Stack,
   Button,
   Heading,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { supabase } from "../supabase";
 
 function NewPassword() {
@@ -20,13 +20,15 @@ function NewPassword() {
 
   const refreshToken = localStorage.getItem("refresh_token");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (localStorage.getItem("refresh_token") == null) {
-      //   router.push("/");
+      navigate("/");
     }
     setLoading(false);
     localStorage.removeItem("refresh_token");
-  }, []);
+  }, [navigate]);
 
   const handleSignup = async () => {
     if (password !== password2) {
@@ -34,7 +36,7 @@ function NewPassword() {
       return;
     }
 
-    const { user, session, error } = await supabase.auth.signIn({
+    await supabase.auth.signIn({
       refreshToken,
     });
 

@@ -273,7 +273,6 @@ const NewSiteForm = ({
                   rounded={"md"}
                   p={6}
                   overflow={"hidden"}
-                  border="1px solid silver"
                   display="flex"
                   border="3px solid #eee"
                   boxShadow={"md"}
@@ -331,7 +330,7 @@ const NewSiteForm = ({
 
   return (
     <Modal
-      isCentered={stage != "templates"}
+      isCentered={stage !== "templates"}
       isOpen={isOpen}
       onClose={handleClose}
     >

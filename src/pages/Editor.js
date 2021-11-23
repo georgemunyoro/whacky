@@ -1,11 +1,9 @@
-import { Box, IconButton, useToast } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import grapesjs from "grapesjs";
 import "grapesjs-preset-webpage";
 import "grapesjs-preset-newsletter";
 import "grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css";
 import "grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.js";
-// import "grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.min.css";
-// import "grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.min.js";
 import "grapesjs/dist/css/grapes.min.css";
 import "grapesjs/dist/grapes.min.js";
 import React, { useEffect, useState } from "react";
@@ -22,7 +20,7 @@ const Editor = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const uploadToServer = async ({ html, css, js, editor_data }) => {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("sites")
       .update({
         html,
@@ -41,7 +39,7 @@ const Editor = () => {
     }
   };
 
-  useEffect(async () => {
+  const loadEditor = async () => {
     const { data } = await supabase
       .from("sites")
       .select("created_at, editor_data, html, css, js, id, name")
@@ -82,6 +80,10 @@ const Editor = () => {
     ]);
 
     setIsLoading(false);
+  };
+
+  useEffect(() => {
+    loadEditor();
   });
 
   if (isLoading) return <Loading height="100%" width="100%" />;
@@ -92,20 +94,6 @@ const Editor = () => {
         <div id="gjs"></div>
       </Box>
     </>
-  );
-};
-
-const EditorCustomControlButton = ({ icon, onClick }) => {
-  return (
-    <IconButton
-      onClick={onClick}
-      style={{
-        background: "none",
-        borderRadius: 0,
-        borderBottom: "1px solid silver",
-      }}
-      icon={icon}
-    />
   );
 };
 

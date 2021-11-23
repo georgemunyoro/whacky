@@ -4,31 +4,24 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Checkbox,
   Stack,
   Link,
   Button,
   Heading,
-  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { supabase } from "../supabase";
-import { useStoreState } from "easy-peasy";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [errors, setErrors] = useState([]);
-  const isLoggedIn = useStoreState((state) => state.isLoggedIn);
-
   const handleSignin = async () => {
-    const { user, session, error } = await supabase.auth.signIn({
+    await supabase.auth.signIn({
       email,
       password,
     });
-    console.log(user, session, error)
   };
 
   return (
