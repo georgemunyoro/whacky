@@ -60,9 +60,10 @@ export default function Navbar() {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.500")} px={4}>
+      <Box bg={"black"} color="white" px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <IconButton
+          background="black"
             size={"md"}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={"Open Menu"}
@@ -91,10 +92,11 @@ export default function Navbar() {
             {!isLoggedIn && (
               <>
                 <Button
-                  variant={"solid"}
+                  // variant={"solid"}
                   size={"sm"}
                   mr={4}
                   onClick={() => navigate("/user/signin")}
+                  background="none"
                 >
                   Sign in
                 </Button>
@@ -123,7 +125,7 @@ export default function Navbar() {
                     src={`https://avatars.dicebear.com/api/identicon/${user?.id}.svg`}
                   />
                 </MenuButton>
-                <MenuList zIndex={100}>
+                <MenuList color="black" zIndex={100}>
                   <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                   <MenuDivider />
                 </MenuList>

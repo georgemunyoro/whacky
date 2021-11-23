@@ -57,6 +57,7 @@ export default function Layout({ children }) {
           });
           setIsLoggedIn(true);
           setSession(session);
+          setUser(session.user);
 
           if (
             !window.location.pathname.startsWith("/subscription") &&

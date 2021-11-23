@@ -6,87 +6,86 @@ import {
   Button,
   Stack,
   Icon,
+  Image,
   useColorModeValue,
   createIcon,
 } from "@chakra-ui/react";
 
+import "../components/fonts.css"
+
 export default function Home() {
   return (
     <>
-      {/* <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
-          rel="stylesheet"
-        />
-      </Head> */}
-
       <Container maxW={"3xl"}>
         <Stack
           as={Box}
-          textAlign={"center"}
           spacing={{ base: 8, md: 14 }}
           py={{ base: 20, md: 36 }}
+          marginTop={-15}
         >
-          <Heading
-            fontWeight={600}
-            fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
-            lineHeight={"110%"}
-          >
-            Id incididunt laborum <br />
-            <Text as={"span"} color={"green.400"}>
-              occaecat et.
-            </Text>
-          </Heading>
-          <Text color={"gray.500"}>
-            Sint sit amet sit deserunt voluptate aliquip. Est id consequat nisi
-            amet nisi ullamco ipsum magna amet ullamco anim nulla eu. In
-            cupidatat qui dolore deserunt proident incididunt magna pariatur est
-            ullamco ad amet excepteur ullamco.
-          </Text>
-          <Stack
-            direction={"column"}
-            spacing={3}
-            align={"center"}
-            alignSelf={"center"}
-            position={"relative"}
-          >
-            <a href="/user/signup">
-              <Button
-                colorScheme={"green"}
-                bg={"green.400"}
-                rounded={"full"}
-                px={6}
-                _hover={{
-                  bg: "green.500",
-                }}
+          <Box style={{display: "flex", alignItems: "center"}}>
+            <Image
+              width={177}
+              src="https://whacky.app/assets/images/boysm1png-177x433.png"
+            />
+            <Box padding={10}>
+              <Heading
+                fontWeight={600}
+                fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
+                lineHeight={"110%"}
               >
-                Get Started
-              </Button>
-            </a>
-            {/* <Button variant={"link"} colorScheme={"blue"} size={"sm"}>
-              Learn more
-            </Button> */}
-            <Box>
-              <Icon
-                as={Arrow}
-                color={useColorModeValue("gray.800", "gray.300")}
-                w={71}
-                position={"absolute"}
-                right={-71}
-                top={"10px"}
-              />
-              <Text
-                fontSize={"lg"}
-                fontFamily={"Caveat"}
-                position={"absolute"}
-                right={"-125px"}
-                top={"-15px"}
-                transform={"rotate(10deg)"}
-              >
-                Click here
+                Web & Mobile
+                <br />
+                <Text as={"span"} color={"green.400"}>
+                  Development
+                </Text>
+              </Heading>
+              <Text color={"gray.500"} style={{marginTop: 10}}>
+                Why pay hundreds of dollars just to keep a simple website
+                presence online? I can build you a super fast site for only $100
+                and host it at $20/yr
               </Text>
+              <Stack
+                direction={"column"}
+                spacing={3}
+                position={"relative"}
+              >
+                <a href="/user/signup">
+                  <Button
+                  marginTop={5}
+                    colorScheme={"green"}
+                    bg={"green.400"}
+                    px={6}
+                    _hover={{
+                      bg: "green.500",
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </a>
+                <Box>
+                  <Icon
+                    as={Arrow}
+                    color={useColorModeValue("gray.800", "gray.300")}
+                    w={71}
+                    position={"absolute"}
+                    right={300}
+                    top={"60px"}
+                  />
+                  <Text
+                    fontSize={"lg"}
+                    fontFamily={"Caveat"}
+                    position={"absolute"}
+                    right={"250px"}
+                    top={"40px"}
+                    transform={"rotate(10deg)"}
+                  >
+                    Click here
+                  </Text>
+                </Box>
+              </Stack>
             </Box>
-          </Stack>
+          </Box>
         </Stack>
       </Container>
     </>

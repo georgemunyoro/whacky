@@ -6,7 +6,10 @@ import Layout from "./components/Layout";
 import store from "./store";
 import { supabase } from "./supabase";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+import "./components/fonts.css"
+
+// const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = "http://localhost:3001"
 
 function App() {
   const isSite = window.location.host !== BASE_URL.split("//").pop();

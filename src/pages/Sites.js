@@ -49,6 +49,7 @@ const Sites = () => {
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [username, setUsername] = useState();
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -79,6 +80,9 @@ const Sites = () => {
   };
 
   useEffect(() => {
+    if (user) {
+      setUsername(user.user_metadata.username);
+    }
     fetchTemplates();
     fetchSites();
     fetchSubs();
@@ -116,11 +120,13 @@ const Sites = () => {
                       <Button>Edit</Button>
                     </Link>
                     <IconButton
-                      isDisabled={!site.published}
+                      isDisabled={!site.published || username == null}
                       onClick={() =>
-                        (window.location.href = `http://${
-                          user?.user_metadata?.username
-                        }.${BASE_URL.split("//").pop()}/${site.name}`)
+                        window.open(
+                          `http://${username}.${BASE_URL.split("//").pop()}/${
+                            site.name
+                          }`
+                        )
                       }
                       icon={<ExternalLinkIcon />}
                       colorScheme="yellow"

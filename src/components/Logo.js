@@ -9,9 +9,9 @@ const Logo = (props) => {
       <Link to="/">
         <p
           id="logo-text"
-          style={{ fontFamily: "Pacifico", fontWeight: 900, fontSize: "25px" }}
+          style={{ fontFamily: "Poppins", fontWeight: 900, fontSize: "25px" }}
         >
-          whacky
+          whacky.app
         </p>
       </Link>
     </div>
