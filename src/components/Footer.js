@@ -5,7 +5,6 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Logo from "./Logo";
 
 export default function Footer() {
   return (

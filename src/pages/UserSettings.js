@@ -1,13 +1,5 @@
-import {
-  Button,
-  Box,
-  Flex,
-  Heading,
-  List,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { useStoreActions, useStoreState } from "easy-peasy";
+import { Button, Box, Heading, List, Stack, Text } from "@chakra-ui/react";
+import { useStoreState } from "easy-peasy";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
 import { supabase } from "../supabase";
@@ -16,7 +8,6 @@ const PAYMENT_API_URL = "http://localhost:4242";
 
 export default function UserSettings() {
   const user = useStoreState((s) => s.user);
-  const setUser = useStoreActions((a) => a.setUser);
 
   // eslint-disable-next-line
   const [payments, setPayments] = useState([]);
@@ -42,6 +33,7 @@ export default function UserSettings() {
     }
   };
 
+  // eslint-disable-next-line
   useEffect(async () => {
     fetchSubs();
   }, [user]);
