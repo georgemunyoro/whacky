@@ -22,11 +22,14 @@ import React, { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import { supabase } from "../supabase";
 import { useParams, useNavigate } from "react-router-dom";
+import { useStoreState } from "easy-peasy";
 
 const SiteSettings = () => {
   const navigate = useNavigate();
   const params = useParams();
   const toast = useToast();
+
+  const user = useStoreState((s) => s.user);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -89,7 +92,7 @@ const SiteSettings = () => {
           })
           .match({ id: site.id });
       } else {
-        await supabase.from("published_sites").insert({
+        const {error}=await supabase.from("published_sites").insert({
           id: site.id,
           name: name,
           html: site.html,
@@ -97,7 +100,9 @@ const SiteSettings = () => {
           js: site.js,
           description: description,
           owner: site.owner,
+          owner_username: user.user_metadata.username,
         });
+        console.log(error)
       }
     }
 

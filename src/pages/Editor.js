@@ -1,8 +1,11 @@
 import { Box, IconButton, useToast } from "@chakra-ui/react";
 import grapesjs from "grapesjs";
 import "grapesjs-preset-webpage";
+import "grapesjs-preset-newsletter";
 import "grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css";
 import "grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.js";
+// import "grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.min.css";
+// import "grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.min.js";
 import "grapesjs/dist/css/grapes.min.css";
 import "grapesjs/dist/grapes.min.js";
 import React, { useEffect, useState } from "react";

@@ -16,18 +16,25 @@ function App() {
   useEffect(async () => {
     if (isSite) {
       const siteName = window.location.pathname.split("/")[1];
+      const username = window.location.host.split(".")[0];
       const { data } = await supabase
         .from("published_sites")
         .select("html, css, js, name")
-        .match({ name: siteName });
+        .match({ name: siteName, owner_username: username });
+
+      if (!data || data.length == 0) {
+        window.location.href = BASE_URL;
+        return;
+      }
 
       const { html, css, js } = data[0];
-      console.log(data)
+      console.log(data);
       setSiteCompleteHtml(`<style>${css}</style>${html}<script>${js}</script>`);
     }
   });
 
-  if (isSite) return <span dangerouslySetInnerHTML={{__html: siteCompleteHtml}}></span>;
+  if (isSite)
+    return <span dangerouslySetInnerHTML={{ __html: siteCompleteHtml }}></span>;
 
   return (
     <ChakraProvider>
