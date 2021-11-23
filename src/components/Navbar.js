@@ -123,11 +123,11 @@ export default function Navbar() {
                     src={`https://avatars.dicebear.com/api/identicon/${user?.id}.svg`}
                   />
                 </MenuButton>
-                <MenuList>
+                <MenuList zIndex={100}>
                   <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={() => navigate("/dashboard/settings")}>
-                    Settings
+                    Billing
                   </MenuItem>
                 </MenuList>
               </Menu>

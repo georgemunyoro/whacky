@@ -18,6 +18,7 @@ import Editor from "../pages/Editor";
 import SiteSettings from "../pages/SiteSettings";
 import UserSettings from "../pages/UserSettings";
 import Pricing from "../pages/Pricing";
+import PaymentSuccessful from "../pages/PaymentSuccessful";
 
 export default function Layout({ children }) {
   const isEditorPage = useMatch("/dashboard/sites/editor/*");
@@ -47,7 +48,10 @@ export default function Layout({ children }) {
           });
           setIsLoggedIn(true);
           setSession(session);
-          navigate("/dashboard/sites");
+
+          if (!window.location.pathname.startsWith("/subscription")) {
+            navigate("/dashboard/sites");
+          }
         } else if (event == "SIGNED_OUT") {
           setIsLoggedIn(false);
           setSession(null);
@@ -172,6 +176,7 @@ export default function Layout({ children }) {
           )}
           {isLoggedIn && (
             <>
+              <Route path="/subscription" element={<PaymentSuccessful />} />
               <Route path="/dashboard/sites" element={<Sites />} />
 
               <Route

@@ -1,5 +1,13 @@
-import { AddIcon, ExternalLinkIcon, SettingsIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  CheckCircleIcon,
+  ExternalLinkIcon,
+  SettingsIcon,
+  LockIcon,
+} from "@chakra-ui/icons";
+import { MdWeb } from "react-icons/md";
 import { Box, Stack } from "@chakra-ui/layout";
+import Logo from "../components/Logo";
 import {
   Center,
   Spinner,
@@ -16,7 +24,6 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -34,16 +41,20 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useStoreState } from "easy-peasy";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
 import { supabase } from "../supabase";
 import { Link } from "react-router-dom";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
+const PAYMENT_API_URL = "http://localhost:4242";
+
 const Sites = () => {
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState([]);
+  // const [subCount, setSubCount] = useState(0);
+  const [payments, setPayments] = useState([]);
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -56,6 +67,13 @@ const Sites = () => {
     setTemplates(data);
   };
 
+  const fetchSubs = async () => {
+    const { data } = await supabase
+      .from("payments")
+      .select("session_id, created_at, user_id");
+    setPayments(data);
+  };
+
   const fetchSites = async () => {
     const { data } = await supabase
       .from("sites")
@@ -66,9 +84,10 @@ const Sites = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     fetchTemplates();
     fetchSites();
+    fetchSubs();
   }, [user]);
 
   if (loading) return <Loading width="100%" height="100%" />;
@@ -80,6 +99,7 @@ const Sites = () => {
         isOpen={isOpen}
         onClose={onClose}
         fetchSites={fetchSites}
+        hasAvailableSubscriptions={sites.length < payments.length}
       />
       <Heading margin={5}>Sites</Heading>
       <Box>
@@ -119,6 +139,13 @@ const Sites = () => {
               </Tr>
             ))}
             <Tr>
+              <Td></Td>
+              <Td style={{ color: "#999" }}>
+                You have {payments.length - sites.length} paid subscription(s)
+                remaining.
+              </Td>
+            </Tr>
+            <Tr>
               <Td>
                 <Button
                   onClick={onOpen}
@@ -136,11 +163,19 @@ const Sites = () => {
   );
 };
 
-const NewSiteForm = ({ isOpen, onClose, fetchSites, templates }) => {
+const NewSiteForm = ({
+  isOpen,
+  onClose,
+  fetchSites,
+  templates,
+  hasAvailableSubscriptions,
+}) => {
   const [newSiteName, setNewSiteName] = useState("");
   const [newSiteDescription, setNewSiteDescription] = useState("");
   const [stage, setStage] = useState("details");
   const [selectedTemplate, setSelectedTemplate] = useState();
+
+  const subscriptionFormRef = useRef();
 
   const handleClose = () => {
     resetForm();
@@ -224,14 +259,95 @@ const NewSiteForm = ({ isOpen, onClose, fetchSites, templates }) => {
     }
   };
 
+  const checkout = () => {
+    subscriptionFormRef.current.submit();
+  };
+
+  if (!hasAvailableSubscriptions)
+    return (
+      <Modal isOpen={isOpen} onClose={handleClose}>
+        <ModalOverlay />
+        <ModalContent style={{ maxWidth: "60vw" }}>
+          <ModalHeader style={modalHeaderStyle}>
+            You don't have enough subscriptions to create a new site
+          </ModalHeader>
+          <ModalBody>
+            <section>
+              <div className="product">
+                <Box
+                  w={"full"}
+                  rounded={"md"}
+                  p={6}
+                  overflow={"hidden"}
+                  border="1px solid silver"
+                  display="flex"
+                  border="3px solid #eee"
+                  boxShadow={"md"}
+                >
+                  <Box h={"15px"} />
+                  <MdWeb size={30} style={{ marginRight: 10 }} />
+                  <Stack>
+                    <Text fontFamily={"body"} fontWeight="bold" color="#333">
+                      Premium plan
+                    </Text>
+                    <Text
+                      margin={0}
+                      fontFamily={"body"}
+                      fontWeight="bold"
+                      color="#999"
+                    >
+                      $20 / year
+                    </Text>
+                  </Stack>
+                </Box>
+              </div>
+              <form
+                ref={subscriptionFormRef}
+                action={`${PAYMENT_API_URL}/create-checkout-session`}
+                method="POST"
+              >
+                {/* Add a hidden field with the lookup_key of your Price */}
+                <input
+                  type="hidden"
+                  name="lookup_key"
+                  value="price_iMvskhNyytU8BkqK"
+                />
+                {/* <button id="checkout-and-portal-button" type="submit">
+                  Checkout
+                </button> */}
+              </form>
+            </section>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" onClick={handleClose} margin={5}>
+              Close
+            </Button>
+            <Button
+              onClick={checkout}
+              leftIcon={<LockIcon />}
+              colorScheme="blue"
+              mr={3}
+            >
+              Checkout
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    );
+
   return (
-    <Modal isOpen={isOpen} onClose={handleClose}>
+    <Modal
+      isCentered={stage != "templates"}
+      isOpen={isOpen}
+      onClose={handleClose}
+    >
       <ModalOverlay />
       <ModalContent style={{ width: "80vw", maxWidth: "80vw" }}>
         {stage == "details" && (
           <>
-            <ModalHeader>Create a new site</ModalHeader>
-            <ModalCloseButton />
+            <ModalHeader style={modalHeaderStyle}>
+              Create a new site
+            </ModalHeader>
             <ModalBody>
               <Stack spacing={4}>
                 <FormControl id="name">
@@ -258,8 +374,7 @@ const NewSiteForm = ({ isOpen, onClose, fetchSites, templates }) => {
         )}
         {stage == "templates" && (
           <>
-            <ModalHeader>Pick a template</ModalHeader>
-            <ModalCloseButton />
+            <ModalHeader style={modalHeaderStyle}>Pick a template</ModalHeader>
             <ModalBody>
               <SimpleGrid padding={5} columns={{ base: 2, md: 3 }} spacing={10}>
                 {templates.map((t) => (
@@ -285,7 +400,9 @@ const NewSiteForm = ({ isOpen, onClose, fetchSites, templates }) => {
               >
                 {selectedTemplate == null
                   ? "Continue"
-                  : `Continue with "${templates.filter((t) => t.id == selectedTemplate)[0]?.name}"`}
+                  : `Continue with "${
+                      templates.filter((t) => t.id == selectedTemplate)[0]?.name
+                    }"`}
               </Button>
             </ModalFooter>
           </>
@@ -352,3 +469,11 @@ const Template = ({ name, img, onClick, isSelected }) => {
 };
 
 export default Sites;
+
+const modalHeaderStyle = {
+  background: "black",
+  color: "white",
+  marginBottom: "2rem",
+  borderRadius: "5px 5px 0 0",
+  textAlign: "center",
+};

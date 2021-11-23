@@ -71,6 +71,7 @@ function SignUp() {
         data: {
           fullname: name,
           username,
+          subscription_count: 0,
         },
       }
     );

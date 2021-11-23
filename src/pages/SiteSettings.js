@@ -65,9 +65,11 @@ const SiteSettings = () => {
   const handleDeleteSite = async () => {
     setIsDeleteConfirmationOpen(false);
     setIsDeleting(true);
+    await supabase.from("published_sites").delete().match({ id: site.id });
     await supabase.from("sites").delete().match({ id: site.id });
     navigate("/dashboard/sites");
   };
+
   const handleSaveSettings = async () => {
     setIsSaving(true);
     await supabase
@@ -92,7 +94,7 @@ const SiteSettings = () => {
           })
           .match({ id: site.id });
       } else {
-        const {error}=await supabase.from("published_sites").insert({
+        const { error } = await supabase.from("published_sites").insert({
           id: site.id,
           name: name,
           html: site.html,
@@ -102,7 +104,6 @@ const SiteSettings = () => {
           owner: site.owner,
           owner_username: user.user_metadata.username,
         });
-        console.log(error)
       }
     }
 
@@ -127,15 +128,15 @@ const SiteSettings = () => {
   return (
     <>
       <Modal
+        isCentered
         isOpen={isDeleteConfirmationOpen}
         onClose={() => setIsDeleteConfirmationOpen(false)}
       >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
+        <ModalContent style={{ maxWidth: "60vw" }}>
+          <ModalHeader style={modalHeaderStyle}>
             Are you sure you want to delete site "{site?.name}"?
           </ModalHeader>
-          <ModalCloseButton />
           <ModalBody fontWeight="bold">
             THIS ACTION IS COMPLETELY IRREVERSIBLE, AND ONCE DELETED, YOU WILL
             NOT BE ABLE TO GET YOUR SITE BACK!
@@ -144,6 +145,7 @@ const SiteSettings = () => {
             <Button
               variant="ghost"
               onClick={() => setIsDeleteConfirmationOpen(false)}
+              margin={2}
             >
               No, nevermind
             </Button>
@@ -232,6 +234,14 @@ const SiteSettings = () => {
       </Flex>
     </>
   );
+};
+
+const modalHeaderStyle = {
+  background: "black",
+  color: "white",
+  marginBottom: "2rem",
+  borderRadius: "5px 5px 0 0",
+  textAlign: "center",
 };
 
 export default SiteSettings;
