@@ -60,7 +60,9 @@ export default function Layout({ children }) {
           setUser(session.user);
 
           if (
-            !window.location.pathname.startsWith("/subscription") &&
+            !window.location.pathname.startsWith(
+              "subscription/?success=true"
+            ) ||
             !window.location.pathname.startsWith("/tos")
           ) {
             navigate("/dashboard/sites");

@@ -5,7 +5,10 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Checkbox,
   useToast,
+  HStack,
+  VStack,
   Stack,
   Link,
   Button,
@@ -25,6 +28,7 @@ function SignUp() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   const toast = useToast();
 
@@ -41,6 +45,10 @@ function SignUp() {
 
     if (name.length < 2) {
       errors.push("Please enter your full name");
+    }
+
+    if (!isTermsAccepted) {
+      errors.push("You must accept the terms of service");
     }
 
     if (errors.length > 0) {
@@ -142,7 +150,7 @@ function SignUp() {
               />
             </FormControl>
             <Stack spacing={10}>
-              <Stack
+              <VStack
                 direction={{ base: "column", sm: "row" }}
                 align={"center"}
                 justify={"space-between"}
@@ -150,7 +158,19 @@ function SignUp() {
                 <a href="/user/signin" color={"blue.400"}>
                   <Link color={"blue.400"}>Already have an account?</Link>
                 </a>
-              </Stack>
+                <HStack>
+                  <Checkbox
+                    onChange={() => setIsTermsAccepted(!isTermsAccepted)}
+                    isChecked={isTermsAccepted}
+                  />
+                  <a>
+                    I've read and accept the{" "}
+                    <Link onClick={() => navigate("/tos")} color={"blue.400"}>
+                      terms and conditions
+                    </Link>
+                  </a>
+                </HStack>
+              </VStack>
               <Button
                 bg={"blue.400"}
                 color={"white"}

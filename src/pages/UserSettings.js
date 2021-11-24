@@ -17,8 +17,20 @@ export default function UserSettings() {
 
   const billingFormRef = useRef();
 
-  const openBillingSession = () => {
-    billingFormRef.current.submit();
+  const openBillingSession = async () => {
+    const res = await fetch(`${PAYMENT_API_URL}/create-portal-session`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user: supabase.auth.user(),
+      }),
+    });
+
+    const { portalUrl } = await res.json();
+    window.location.href = portalUrl;
   };
 
   const fetchSubs = async () => {
@@ -29,8 +41,8 @@ export default function UserSettings() {
     if (!error && data.length > 0) {
       setPayments(data);
       setSessionId(data.pop().session_id);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   // eslint-disable-next-line
@@ -61,8 +73,8 @@ export default function UserSettings() {
         <input
           type="hidden"
           id="session-id"
-          name="session_id"
-          value={sessionId}
+          name="user"
+          value={JSON.stringify(user)}
         />
       </form>
       <Stack spacing={6} direction={["column", "row"]}>

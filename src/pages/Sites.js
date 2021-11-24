@@ -43,6 +43,7 @@ import { supabase } from "../supabase";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const PAYMENT_API_URL = process.env.REACT_APP_PAYMENTS_API_URL;
+const SUBSCRIPTION_PRICE_KEY = process.env.REACT_APP_PRICE_KEY
 
 const Sites = () => {
   const [sites, setSites] = useState([]);
@@ -63,9 +64,7 @@ const Sites = () => {
   };
 
   const fetchSubs = async () => {
-    const { data } = await supabase
-      .from("payments")
-      .select("session_id, created_at, user_id");
+    const { data } = await supabase.from("subscriptions").select("id, user_id");
     setPayments(data);
   };
 
@@ -174,6 +173,7 @@ const NewSiteForm = ({
   const [newSiteDescription, setNewSiteDescription] = useState("");
   const [stage, setStage] = useState("details");
   const [selectedTemplate, setSelectedTemplate] = useState();
+  const [isAwaitingCheckout, setIsAwaitingCheckout] = useState(false);
 
   const subscriptionFormRef = useRef();
 
@@ -259,13 +259,27 @@ const NewSiteForm = ({
     }
   };
 
-  const checkout = () => {
-    subscriptionFormRef.current.submit();
+  const checkout = async () => {
+    setIsAwaitingCheckout(true);
+    console.log(supabase);
+    const res = await fetch(`${PAYMENT_API_URL}/create-checkout-session`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        lookup_key: SUBSCRIPTION_PRICE_KEY,
+        user: supabase.auth.user(),
+      }),
+    });
+    const { checkoutUrl } = await res.json();
+    window.location.href = checkoutUrl;
   };
 
   if (!hasAvailableSubscriptions)
     return (
-      <Modal isOpen={isOpen} onClose={handleClose}>
+      <Modal isCentered isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent style={{ maxWidth: "60vw" }}>
           <ModalHeader style={modalHeaderStyle}>
@@ -326,8 +340,9 @@ const NewSiteForm = ({
               leftIcon={<LockIcon />}
               colorScheme="blue"
               mr={3}
+              isDisabled={isAwaitingCheckout}
             >
-              Checkout
+              {isAwaitingCheckout ? <Spinner /> : "Checkout"}
             </Button>
           </ModalFooter>
         </ModalContent>
