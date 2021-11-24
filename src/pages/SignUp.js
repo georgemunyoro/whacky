@@ -163,12 +163,12 @@ function SignUp() {
                     onChange={() => setIsTermsAccepted(!isTermsAccepted)}
                     isChecked={isTermsAccepted}
                   />
-                  <a>
+                  <p>
                     I've read and accept the{" "}
                     <Link onClick={() => navigate("/tos")} color={"blue.400"}>
                       terms and conditions
                     </Link>
-                  </a>
+                  </p>
                 </HStack>
               </VStack>
               <Button
