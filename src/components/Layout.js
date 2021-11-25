@@ -132,6 +132,7 @@ export default function Layout({ children }) {
             display: "flex",
             flexDirection: "column",
             height: "83vh",
+            justifyContent: "center"
           }}
         >
           <Box style={{ height: "100%", display: "flex" }}>
@@ -165,6 +166,7 @@ export default function Layout({ children }) {
           display: "flex",
           flexDirection: "column",
           height: "83vh",
+          justifyContent: "center"
         }}
       >
         <Routes>

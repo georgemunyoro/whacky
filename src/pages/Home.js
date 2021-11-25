@@ -25,7 +25,7 @@ export default function Home() {
           py={{ base: 20, md: 36 }}
           marginTop={-15}
         >
-          <Box style={{ display: "flex", alignItems: "center" }}>
+          <Box style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Image
               width={177}
               src="https://whacky.app/assets/images/boysm1png-177x433.png"
